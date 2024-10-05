@@ -77,69 +77,12 @@ EOF
 }
 
 
-# 初始化 Kubernetes
-function init_kubernetes() {
-    echo -e "\n ==> ....初始化 Kubernetes...."
-    #sudo kubeadm init --pod-network-cidr=192.168.0.0/16
-
-	kubeadm init \
-        --image-repository registry.cn-hangzhou.aliyuncs.com/google_containers \
-        --pod-network-cidr 192.168.0.0/16 \
-        --cri-socket /run/containerd/containerd.sock \
-        --v 5 \
-       
-        echo "Kubernetes 初始化完成."
-
-    # 配置 kubectl
-    echo "配置 kubectl..."
-    mkdir -p $HOME/.kube
-    sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
-    sudo chown $(id -u):$(id -g) $HOME/.kube/config
-    echo "kubectl 配置完成."
-}
-
-# 安装网络插件 (Calico)
-function install_network_plugin() {
-    echo -e "\n  ==>  安装网络插件 Calico..."
-    #kubectl apply -f https://docs.projectcalico.org/manifests/calico.yaml
-
-	wget https://docs.projectcalico.org/manifests/calico.yaml
-	sed -i 's/docker.io/docker.linkos.org/g' ./calico.yaml
-	kubectl apply -f ./calico.yaml
-	
-    echo "网络插件安装完成."
-}
-
-# 安装 Ingress-Nginx
-function install_ingress_nginx() {
-    echo -e "\n ==> 安装 Ingress-Nginx..."
-    #kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/main/deploy/static/provider/cloud/deploy.yaml
-
-	#wget https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.11.2/deploy/static/provider/cloud/deploy.yaml
-	#sed -i 's/@sha.*//g' ./deploy.yaml
-	#sed -i 's/registry.k8s.io\/ingress-nginx/registry.cn-hangzhou.aliyuncs.com\/google_containers/g' ./deploy.yaml
-	
-	# remove taint of master node
-	kubectl taint node `hostname` node-role.kubernetes.io/control-plane:NoSchedule-
-	kubectl apply -f ./ingress-nginx.yaml
-
-	echo -e "\n  ==>  sleep 5 for Ingress nginx-----------------------"
-	sleep 5
-	kubectl get pod -A
-
-    echo "Ingress-Nginx 安装完成."
-}
-
 # 主函数
 function main() {
 	
 	set_ubuntu
 	install_containerd
 	install_k8s
-
-    init_kubernetes
-    install_network_plugin
-    install_ingress_nginx
 
     echo "Kubernetes 和 Ingress-Nginx 安装完成."
 }

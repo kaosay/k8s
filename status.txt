@@ -1,0 +1,12 @@
+              total        used        free      shared  buff/cache   available
+Mem:          1.9Gi       198Mi        78Mi       1.0Mi       1.7Gi       1.5Gi
+Swap:         3.8Gi       7.0Mi       3.8Gi
+Filesystem      Size  Used Avail Use% Mounted on
+udev            941M     0  941M   0% /dev
+tmpfs           198M  1.2M  196M   1% /run
+/dev/vda2        40G  7.7G   30G  21% /
+tmpfs           986M     0  986M   0% /dev/shm
+tmpfs           5.0M     0  5.0M   0% /run/lock
+tmpfs           986M     0  986M   0% /sys/fs/cgroup
+none            986M  164K  986M   1% /run/qemu
+tmpfs           198M     0  198M   0% /run/user/0
