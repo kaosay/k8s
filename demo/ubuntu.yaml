@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: user50001-ssh
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user50001-ssh
+  template:
+    metadata:
+      labels:
+        app: user50001-ssh
+    spec:
+      containers:
+      - name: user50001-ssh
+        image: rs-sg.jiuduotech.com/shuimu/ubuntu:v1
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 22
+        command: 
+          - /bin/sh
+          - -c
+          - |
+            echo 'ubuntu:ubuntu'| chpasswd
+            /usr/sbin/sshd -D 
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: user50001-service
+spec:
+  type: NodePort
+  ports:
+  - port: 22
+    targetPort: 22
+    nodePort: 50001
+  selector:
+    app: user50001-ssh
+
