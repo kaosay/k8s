@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: allow-tom-to-tom
+  namespace: jinsu
+spec:
+  podSelector:
+    matchLabels:
+      user: tom
+  policyTypes:
+  - Ingress
+  ingress:
+  - from:
+    - podSelector:
+        matchLabels:
+          user: tom

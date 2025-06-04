@@ -1,0 +1,16 @@
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata:
+  name: pod-deny-to-node
+  namespace: jinsu
+spec:
+  podSelector: {} # 匹配命名空间中的所有 Pod
+  policyTypes:
+  - Egress
+  egress:
+  - to:
+    - ipBlock:
+        cidr: 0.0.0.0/0 # 允许所有 IP
+        except:
+        - 172.16.20.0/24 # 排除 172.16.20.0/24 所有流量
+        - 172.16.21.0/24 # 排除 172.16.21.0/24 所有流量
